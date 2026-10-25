@@ -1,0 +1,6 @@
+{
+  "name": "ApexSim Telemetry & Race Hub",
+  "description": "Sim racing race & driver management, live session telemetry, GT3 car roster, and Supabase database synchronization.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

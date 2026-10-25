@@ -20,8 +20,12 @@ function Dashboard({ stats, races, tracks, drivers, cars, participants }) {
   const nextTrack = nextRace ? getById(tracks, nextRace.trackId) : null;
 
   return (
-    <section>
-      <h2 className="page-title">Dashboard</h2>
+    <section className="dashboard-page">
+      <div className="dashboard-heading">
+        <h2 className="page-title">Dashboard</h2>
+        <p className="page-description">Ringkasan kejuaraan dan aktivitas race.</p>
+      </div>
+
       <div className="stat-grid">
         {stats.map((stat) => (
           <StatCard key={stat.label} label={stat.label} value={stat.value} />
@@ -29,41 +33,66 @@ function Dashboard({ stats, races, tracks, drivers, cars, participants }) {
       </div>
 
       <div className="dashboard-grid">
-        <div className="card">
-          <h3>Race Berikutnya</h3>
-          {nextRace ? (
+        <article className="card dashboard-panel">
+          <div className="dashboard-panel-heading">
             <div>
+              <p className="dashboard-eyebrow">AGENDA</p>
+              <h3>Race Berikutnya</h3>
+            </div>
+            {nextRace && <span className="dashboard-status">TERJADWAL</span>}
+          </div>
+          {nextRace ? (
+            <div className="next-race-details">
               <p className="highlight">{nextRace.name}</p>
-              <p className="muted">
-                {nextTrack ? nextTrack.name : "-"} · {formatDate(nextRace.date)} · {nextRace.time}
-              </p>
-              <p className="muted">Durasi rencana: {formatMinutes(nextRace.plannedDuration)}</p>
+              <p className="next-race-track">{nextTrack ? nextTrack.name : "Sirkuit belum dipilih"}</p>
+              <div className="race-meta">
+                <div>
+                  <span>TANGGAL</span>
+                  <strong>{formatDate(nextRace.date)}</strong>
+                </div>
+                <div>
+                  <span>WAKTU</span>
+                  <strong>{nextRace.time}</strong>
+                </div>
+                <div>
+                  <span>DURASI</span>
+                  <strong>{formatMinutes(nextRace.plannedDuration)}</strong>
+                </div>
+              </div>
             </div>
           ) : (
             <p className="empty">Belum ada race terjadwal</p>
           )}
-        </div>
+        </article>
 
-        <div className="card">
-          <h3>Podium Terakhir{lastRace ? ` - ${lastRace.name}` : ""}</h3>
+        <article className="card dashboard-panel">
+          <div className="dashboard-panel-heading">
+            <div>
+              <p className="dashboard-eyebrow">HASIL TERBARU</p>
+              <h3>Podium Terakhir</h3>
+            </div>
+            {lastRace && <span className="dashboard-race-name">{lastRace.name}</span>}
+          </div>
           {podium.length === 0 ? (
             <p className="empty">Belum ada hasil race</p>
           ) : (
-            <ol className="podium">
+            <ol className="podium dashboard-podium">
               {podium.map((p) => {
                 const driver = getById(drivers, p.driverId);
                 const car = getById(cars, p.carId);
                 return (
                   <li key={p.id}>
-                    <span className="podium-pos">P{p.finishPosition}</span>
-                    <span>{driver ? driver.name : "-"}</span>
-                    <span className="muted">{car ? car.name : "-"}</span>
+                    <span className={`podium-pos podium-pos-${p.finishPosition}`}>P{p.finishPosition}</span>
+                    <span className="podium-driver">
+                      <strong>{driver ? driver.name : "Driver tidak ditemukan"}</strong>
+                      <span>{car ? car.name : "Mobil tidak ditemukan"}</span>
+                    </span>
                   </li>
                 );
               })}
             </ol>
           )}
-        </div>
+        </article>
       </div>
     </section>
   );

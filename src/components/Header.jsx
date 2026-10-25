@@ -1,8 +1,21 @@
+import { useEffect, useState } from "react";
 import logo from "../assets/logo.png";
 
 function Header() {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    function updateScrollState() {
+      setIsScrolled(window.scrollY > 0);
+    }
+
+    updateScrollState();
+    window.addEventListener("scroll", updateScrollState, { passive: true });
+    return () => window.removeEventListener("scroll", updateScrollState);
+  }, []);
+
   return (
-    <header className="header">
+    <header className={`header${isScrolled ? " header-scrolled" : ""}`}>
       <div className="header-brand">
         <img className="header-logo" src={logo} alt="Sim Racing" />
         <div>

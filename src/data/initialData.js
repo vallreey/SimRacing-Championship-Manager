@@ -1,3 +1,13 @@
+import mercedesImage from "../assets/mercedes-amg-gt3.png";
+import porscheImage from "../assets/Porsche 911 GT3 R.jpg";
+import ferrariImage from "../assets/Ferrari 296 GT3.png";
+import bmwImage from "../assets/BMW M4 GT3.jpg";
+import toyotaImage from "../assets/Toyota GR010 Hybrid.jpg";
+import monzaImage from "../assets/Autodromo Nazionale Monza.jpg";
+import spaImage from "../assets/Circuit de Spa-Francorchamps.jpg";
+import suzukaImage from "../assets/Suzuka Circuit.jpg";
+import sentulImage from "../assets/Sirkuit Internasional Sentul.jpg";
+
 export const initialDrivers = [
   { id: "drv-1", name: "Rafi Pratama", country: "Indonesia", number: 7 },
   { id: "drv-2", name: "Lucas Meyer", country: "Jerman", number: 12 },
@@ -8,18 +18,18 @@ export const initialDrivers = [
 ];
 
 export const initialCars = [
-  { id: "car-1", name: "Mercedes-AMG GT3 Evo", manufacturer: "Mercedes-AMG", carClass: "GT3" },
-  { id: "car-2", name: "Porsche 911 GT3 R", manufacturer: "Porsche", carClass: "GT3" },
-  { id: "car-3", name: "Ferrari 296 GT3", manufacturer: "Ferrari", carClass: "GT3" },
-  { id: "car-4", name: "BMW M4 GT3", manufacturer: "BMW", carClass: "GT3" },
-  { id: "car-5", name: "Toyota GR010 Hybrid", manufacturer: "Toyota", carClass: "Hypercar" },
+  { id: "car-1", name: "Mercedes-AMG GT3 Evo", manufacturer: "Mercedes-AMG", carClass: "GT3", image: mercedesImage },
+  { id: "car-2", name: "Porsche 911 GT3 R", manufacturer: "Porsche", carClass: "GT3", image: porscheImage },
+  { id: "car-3", name: "Ferrari 296 GT3", manufacturer: "Ferrari", carClass: "GT3", image: ferrariImage },
+  { id: "car-4", name: "BMW M4 GT3", manufacturer: "BMW", carClass: "GT3", image: bmwImage },
+  { id: "car-5", name: "Toyota GR010 Hybrid", manufacturer: "Toyota", carClass: "Hypercar", image: toyotaImage },
 ];
 
 export const initialTracks = [
-  { id: "trk-1", name: "Autodromo Nazionale Monza", country: "Italia", length: 5.793 },
-  { id: "trk-2", name: "Circuit de Spa-Francorchamps", country: "Belgia", length: 7.004 },
-  { id: "trk-3", name: "Suzuka Circuit", country: "Jepang", length: 5.807 },
-  { id: "trk-4", name: "Sirkuit Internasional Sentul", country: "Indonesia", length: 3.965 },
+  { id: "trk-1", name: "Autodromo Nazionale Monza", country: "Italia", length: 5.793, image: monzaImage },
+  { id: "trk-2", name: "Circuit de Spa-Francorchamps", country: "Belgia", length: 7.004, image: spaImage },
+  { id: "trk-3", name: "Suzuka Circuit", country: "Jepang", length: 5.807, image: suzukaImage },
+  { id: "trk-4", name: "Sirkuit Internasional Sentul", country: "Indonesia", length: 3.965, image: sentulImage },
 ];
 
 export const initialRaces = [
