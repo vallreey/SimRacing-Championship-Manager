@@ -6,3 +6,11 @@ export const initialDrivers = [
   { id: "drv-5", name: "Mateo Rossi", country: "Italia", number: 51 },
   { id: "drv-6", name: "Dimas Aditya", country: "Indonesia", number: 88 },
 ];
+
+export const initialCars = [
+  { id: "car-1", name: "Mercedes-AMG GT3 Evo", manufacturer: "Mercedes-AMG", carClass: "GT3" },
+  { id: "car-2", name: "Porsche 911 GT3 R", manufacturer: "Porsche", carClass: "GT3" },
+  { id: "car-3", name: "Ferrari 296 GT3", manufacturer: "Ferrari", carClass: "GT3" },
+  { id: "car-4", name: "BMW M4 GT3", manufacturer: "BMW", carClass: "GT3" },
+  { id: "car-5", name: "Toyota GR010 Hybrid", manufacturer: "Toyota", carClass: "Hypercar" },
+];
