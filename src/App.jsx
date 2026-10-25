@@ -5,7 +5,8 @@ import Dashboard from "./components/Dashboard";
 import PlaceholderPage from "./components/PlaceholderPage";
 import DriverPage from "./components/DriverPage";
 import CarPage from "./components/CarPage";
-import { initialDrivers, initialCars } from "./data/initialData";
+import TrackPage from "./components/TrackPage";
+import { initialDrivers, initialCars, initialTracks } from "./data/initialData";
 import { createId } from "./utils/helpers";
 
 const navItems = [
@@ -23,6 +24,7 @@ function App() {
   const [activePage, setActivePage] = useState("dashboard");
   const [drivers, setDrivers] = useState(initialDrivers);
   const [cars, setCars] = useState(initialCars);
+  const [tracks, setTracks] = useState(initialTracks);
 
   function handleAddDriver(data) {
     setDrivers([...drivers, { id: createId("drv"), ...data }]);
@@ -48,10 +50,22 @@ function App() {
     setCars(cars.filter((car) => car.id !== id));
   }
 
+  function handleAddTrack(data) {
+    setTracks([...tracks, { id: createId("trk"), ...data }]);
+  }
+
+  function handleUpdateTrack(id, data) {
+    setTracks(tracks.map((track) => (track.id === id ? { ...track, ...data } : track)));
+  }
+
+  function handleDeleteTrack(id) {
+    setTracks(tracks.filter((track) => track.id !== id));
+  }
+
   const stats = [
     { label: "Driver", value: drivers.length },
     { label: "Mobil", value: cars.length },
-    { label: "Sirkuit", value: 0 },
+    { label: "Sirkuit", value: tracks.length },
     { label: "Race", value: 0 },
     { label: "Peserta", value: 0 },
   ];
@@ -64,11 +78,11 @@ function App() {
         {activePage === "dashboard" && <Dashboard stats={stats} />}
         {activePage === "drivers" && <DriverPage drivers={drivers} onAdd={handleAddDriver} onUpdate={handleUpdateDriver} onDelete={handleDeleteDriver} />}
         {activePage === "cars" && <CarPage cars={cars} onAdd={handleAddCar} onUpdate={handleUpdateCar} onDelete={handleDeleteCar} />}
-        {activePage === "tracks" && <PlaceholderPage title="Sirkuit" />}
-        {activePage === "races" && <PlaceholderPage title="Jadwal Race" />}
-        {activePage === "participants" && <PlaceholderPage title="Peserta & Grid" />}
-        {activePage === "control" && <PlaceholderPage title="Start & Finish" />}
-        {activePage === "results" && <PlaceholderPage title="Hasil Race" />}
+        {activePage === "tracks" && <TrackPage tracks={tracks} onAdd={handleAddTrack} onUpdate={handleUpdateTrack} onDelete={handleDeleteTrack} />}
+        {activePage === "races" && <PlaceholderPage title="Jadwal Race"/>}
+        {activePage === "participants" && <PlaceholderPage title="Peserta & Grid"/>}
+        {activePage === "control" && <PlaceholderPage title="Start & Finish"/>}
+        {activePage === "results" && <PlaceholderPage title="Hasil Race"/>}
       </main>
     </div>
   );

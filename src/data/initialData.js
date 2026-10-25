@@ -14,3 +14,10 @@ export const initialCars = [
   { id: "car-4", name: "BMW M4 GT3", manufacturer: "BMW", carClass: "GT3" },
   { id: "car-5", name: "Toyota GR010 Hybrid", manufacturer: "Toyota", carClass: "Hypercar" },
 ];
+
+export const initialTracks = [
+  { id: "trk-1", name: "Autodromo Nazionale Monza", country: "Italia", length: 5.793 },
+  { id: "trk-2", name: "Circuit de Spa-Francorchamps", country: "Belgia", length: 7.004 },
+  { id: "trk-3", name: "Suzuka Circuit", country: "Jepang", length: 5.807 },
+  { id: "trk-4", name: "Sirkuit Internasional Sentul", country: "Indonesia", length: 3.965 },
+];
