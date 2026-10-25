@@ -1,4 +1,4 @@
-function PlaceholderPage({title}) {
+function PlaceholderPage({ title}) {
   return (
     <section>
       <h2 className="page-title">{title}</h2>
