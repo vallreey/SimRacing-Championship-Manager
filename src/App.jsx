@@ -157,6 +157,7 @@ function App() {
     { label: "Sirkuit", value: tracks.length },
     { label: "Race", value: races.length },
     { label: "Peserta", value: participants.length },
+    { label: "Race Selesai", value: races.filter((race) => race.status === "Finished").length },
   ];
 
   return (
@@ -164,7 +165,7 @@ function App() {
       <Header />
       <Navbar items={navItems} activePage={activePage} onNavigate={setActivePage} />
       <main className="main">
-        {activePage === "dashboard" && <Dashboard stats={stats} />}
+        {activePage === "dashboard" && <Dashboard stats={stats} races={races} tracks={tracks} drivers={drivers} cars={cars} participants={participants} />}
         {activePage === "drivers" && <DriverPage drivers={drivers} onAdd={handleAddDriver} onUpdate={handleUpdateDriver} onDelete={handleDeleteDriver} />}
         {activePage === "cars" && <CarPage cars={cars} onAdd={handleAddCar} onUpdate={handleUpdateCar} onDelete={handleDeleteCar} />}
         {activePage === "tracks" && <TrackPage tracks={tracks} onAdd={handleAddTrack} onUpdate={handleUpdateTrack} onDelete={handleDeleteTrack} />}
