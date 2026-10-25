@@ -6,7 +6,8 @@ import PlaceholderPage from "./components/PlaceholderPage";
 import DriverPage from "./components/DriverPage";
 import CarPage from "./components/CarPage";
 import TrackPage from "./components/TrackPage";
-import { initialDrivers, initialCars, initialTracks } from "./data/initialData";
+import RacePage from "./components/RacePage";
+import { initialDrivers, initialCars, initialTracks, initialRaces } from "./data/initialData";
 import { createId } from "./utils/helpers";
 
 const navItems = [
@@ -25,6 +26,7 @@ function App() {
   const [drivers, setDrivers] = useState(initialDrivers);
   const [cars, setCars] = useState(initialCars);
   const [tracks, setTracks] = useState(initialTracks);
+  const [races, setRaces] = useState(initialRaces);
 
   function handleAddDriver(data) {
     setDrivers([...drivers, { id: createId("drv"), ...data }]);
@@ -59,14 +61,33 @@ function App() {
   }
 
   function handleDeleteTrack(id) {
+    if (races.some((race) => race.trackId === id)) {
+      window.alert("Sirkuit tidak dapat dihapus karena dipakai di jadwal race.");
+      return;
+    }
     setTracks(tracks.filter((track) => track.id !== id));
+  }
+
+  function handleAddRace(data) {
+    setRaces([
+      ...races,
+      { id: createId("race"), ...data, startTime: null, endTime: null, actualDuration: null },
+    ]);
+  }
+
+  function handleUpdateRace(id, data) {
+    setRaces(races.map((race) => (race.id === id ? { ...race, ...data } : race)));
+  }
+
+  function handleDeleteRace(id) {
+    setRaces(races.filter((race) => race.id !== id));
   }
 
   const stats = [
     { label: "Driver", value: drivers.length },
     { label: "Mobil", value: cars.length },
     { label: "Sirkuit", value: tracks.length },
-    { label: "Race", value: 0 },
+    { label: "Race", value: races.length },
     { label: "Peserta", value: 0 },
   ];
 
@@ -79,9 +100,9 @@ function App() {
         {activePage === "drivers" && <DriverPage drivers={drivers} onAdd={handleAddDriver} onUpdate={handleUpdateDriver} onDelete={handleDeleteDriver} />}
         {activePage === "cars" && <CarPage cars={cars} onAdd={handleAddCar} onUpdate={handleUpdateCar} onDelete={handleDeleteCar} />}
         {activePage === "tracks" && <TrackPage tracks={tracks} onAdd={handleAddTrack} onUpdate={handleUpdateTrack} onDelete={handleDeleteTrack} />}
-        {activePage === "races" && <PlaceholderPage title="Jadwal Race"/>}
+        {activePage === "races" && <RacePage races={races} tracks={tracks} onAdd={handleAddRace} onUpdate={handleUpdateRace} onDelete={handleDeleteRace} />}
         {activePage === "participants" && <PlaceholderPage title="Peserta & Grid"/>}
-        {activePage === "control" && <PlaceholderPage title="Start & Finish"/>}
+        {activePage === "control" && <PlaceholderPage title="Start & Finish" />}
         {activePage === "results" && <PlaceholderPage title="Hasil Race"/>}
       </main>
     </div>

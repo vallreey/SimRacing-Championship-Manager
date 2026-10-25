@@ -21,3 +21,42 @@ export const initialTracks = [
   { id: "trk-3", name: "Suzuka Circuit", country: "Jepang", length: 5.807 },
   { id: "trk-4", name: "Sirkuit Internasional Sentul", country: "Indonesia", length: 3.965 },
 ];
+
+export const initialRaces = [
+  {
+    id: "race-1",
+    name: "Round 2 - Monza Sprint",
+    trackId: "trk-1",
+    date: "2026-11-07",
+    time: "19:00",
+    plannedDuration: 60,
+    status: "Scheduled",
+    startTime: null,
+    endTime: null,
+    actualDuration: null,
+  },
+  {
+    id: "race-2",
+    name: "Round 3 - Spa Endurance",
+    trackId: "trk-2",
+    date: "2026-11-21",
+    time: "20:00",
+    plannedDuration: 120,
+    status: "Scheduled",
+    startTime: null,
+    endTime: null,
+    actualDuration: null,
+  },
+  {
+    id: "race-3",
+    name: "Round 1 - Suzuka Opening",
+    trackId: "trk-3",
+    date: "2026-10-10",
+    time: "19:30",
+    plannedDuration: 90,
+    status: "Finished",
+    startTime: "2026-10-10T12:30:00.000Z",
+    endTime: "2026-10-10T14:03:00.000Z",
+    actualDuration: "01:33",
+  },
+];
