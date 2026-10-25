@@ -60,3 +60,13 @@ export const initialRaces = [
     actualDuration: "01:33",
   },
 ];
+
+export const initialParticipants = [
+  { id: "part-1", raceId: "race-3", driverId: "drv-1", carId: "car-1", gridPosition: 1, finishPosition: 2 },
+  { id: "part-2", raceId: "race-3", driverId: "drv-2", carId: "car-2", gridPosition: 2, finishPosition: 1 },
+  { id: "part-3", raceId: "race-3", driverId: "drv-3", carId: "car-3", gridPosition: 3, finishPosition: 3 },
+  { id: "part-4", raceId: "race-3", driverId: "drv-4", carId: "car-4", gridPosition: 4, finishPosition: 4 },
+  { id: "part-5", raceId: "race-1", driverId: "drv-1", carId: "car-1", gridPosition: 1, finishPosition: null },
+  { id: "part-6", raceId: "race-1", driverId: "drv-5", carId: "car-3", gridPosition: 2, finishPosition: null },
+  { id: "part-7", raceId: "race-1", driverId: "drv-6", carId: "car-2", gridPosition: 3, finishPosition: null },
+];

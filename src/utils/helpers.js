@@ -23,3 +23,25 @@ export function formatDate(dateString) {
     year: "numeric",
   });
 }
+
+export function formatClock(milliseconds) {
+  const totalSeconds = Math.floor(milliseconds / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+}
+
+export function formatDateTime(isoString) {
+  return new Date(isoString).toLocaleString("id-ID", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+export function formatDuration(milliseconds) {
+  return formatMinutes(Math.floor(milliseconds / 60000));
+}

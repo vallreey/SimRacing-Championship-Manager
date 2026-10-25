@@ -2,13 +2,15 @@ import { useState } from "react";
 import Header from "./components/Header";
 import Navbar from "./components/Navbar";
 import Dashboard from "./components/Dashboard";
-import PlaceholderPage from "./components/PlaceholderPage";
 import DriverPage from "./components/DriverPage";
 import CarPage from "./components/CarPage";
 import TrackPage from "./components/TrackPage";
 import RacePage from "./components/RacePage";
-import { initialDrivers, initialCars, initialTracks, initialRaces } from "./data/initialData";
-import { createId } from "./utils/helpers";
+import ParticipantPage from "./components/ParticipantPage";
+import RaceControl from "./components/RaceControl";
+import ResultsPage from "./components/ResultsPage";
+import { initialDrivers, initialCars, initialTracks, initialRaces, initialParticipants } from "./data/initialData";
+import { createId, getById, formatDuration } from "./utils/helpers";
 
 const navItems = [
   { key: "dashboard", label: "Dashboard" },
@@ -27,6 +29,7 @@ function App() {
   const [cars, setCars] = useState(initialCars);
   const [tracks, setTracks] = useState(initialTracks);
   const [races, setRaces] = useState(initialRaces);
+  const [participants, setParticipants] = useState(initialParticipants);
 
   function handleAddDriver(data) {
     setDrivers([...drivers, { id: createId("drv"), ...data }]);
@@ -37,6 +40,10 @@ function App() {
   }
 
   function handleDeleteDriver(id) {
+    if (participants.some((p) => p.driverId === id)) {
+      window.alert("Driver tidak dapat dihapus karena sudah menjadi peserta race.");
+      return;
+    }
     setDrivers(drivers.filter((driver) => driver.id !== id));
   }
 
@@ -49,6 +56,10 @@ function App() {
   }
 
   function handleDeleteCar(id) {
+    if (participants.some((p) => p.carId === id)) {
+      window.alert("Mobil tidak dapat dihapus karena sudah dipakai peserta race.");
+      return;
+    }
     setCars(cars.filter((car) => car.id !== id));
   }
 
@@ -80,7 +91,64 @@ function App() {
   }
 
   function handleDeleteRace(id) {
+    if (getById(races, id).status === "In Progress") {
+      window.alert("Race yang sedang berjalan tidak dapat dihapus.");
+      return;
+    }
     setRaces(races.filter((race) => race.id !== id));
+    setParticipants(participants.filter((p) => p.raceId !== id));
+  }
+
+  function handleAddParticipant(data) {
+    setParticipants([...participants, { id: createId("part"), ...data, finishPosition: null }]);
+  }
+
+  function handleUpdateParticipant(id, data) {
+    setParticipants(participants.map((p) => (p.id === id ? { ...p, ...data } : p)));
+  }
+
+  function handleDeleteParticipant(id) {
+    setParticipants(participants.filter((p) => p.id !== id));
+  }
+
+  function handleStartRace(id) {
+    setRaces(
+      races.map((race) =>
+        race.id === id
+          ? {
+              ...race,
+              status: "In Progress",
+              startTime: new Date().toISOString(),
+              endTime: null,
+              actualDuration: null,
+            }
+          : race
+      )
+    );
+  }
+
+  function handleFinishRace(id) {
+    const endTime = new Date();
+    setRaces(
+      races.map((race) =>
+        race.id === id
+          ? {
+              ...race,
+              status: "Finished",
+              endTime: endTime.toISOString(),
+              actualDuration: formatDuration(endTime.getTime() - new Date(race.startTime).getTime()),
+            }
+          : race
+      )
+    );
+  }
+
+  function handleSaveResults(raceId, positions) {
+    setParticipants(
+      participants.map((p) =>
+        p.raceId === raceId ? { ...p, finishPosition: positions[p.id] } : p
+      )
+    );
   }
 
   const stats = [
@@ -88,7 +156,7 @@ function App() {
     { label: "Mobil", value: cars.length },
     { label: "Sirkuit", value: tracks.length },
     { label: "Race", value: races.length },
-    { label: "Peserta", value: 0 },
+    { label: "Peserta", value: participants.length },
   ];
 
   return (
@@ -101,9 +169,9 @@ function App() {
         {activePage === "cars" && <CarPage cars={cars} onAdd={handleAddCar} onUpdate={handleUpdateCar} onDelete={handleDeleteCar} />}
         {activePage === "tracks" && <TrackPage tracks={tracks} onAdd={handleAddTrack} onUpdate={handleUpdateTrack} onDelete={handleDeleteTrack} />}
         {activePage === "races" && <RacePage races={races} tracks={tracks} onAdd={handleAddRace} onUpdate={handleUpdateRace} onDelete={handleDeleteRace} />}
-        {activePage === "participants" && <PlaceholderPage title="Peserta & Grid"/>}
-        {activePage === "control" && <PlaceholderPage title="Start & Finish" />}
-        {activePage === "results" && <PlaceholderPage title="Hasil Race"/>}
+        {activePage === "participants" && <ParticipantPage races={races} drivers={drivers} cars={cars} participants={participants} onAdd={handleAddParticipant} onUpdate={handleUpdateParticipant} onDelete={handleDeleteParticipant} />}
+        {activePage === "control" && <RaceControl races={races} tracks={tracks} participants={participants} onStart={handleStartRace} onFinish={handleFinishRace} />}
+        {activePage === "results" && <ResultsPage races={races} drivers={drivers} cars={cars} participants={participants} onSaveResults={handleSaveResults} />}
       </main>
     </div>
   );
