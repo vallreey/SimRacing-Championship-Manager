@@ -2,9 +2,7 @@
 
 Aplikasi web untuk mengelola kejuaraan sim racing, termasuk driver, mobil, sirkuit, jadwal race, peserta, dan hasil. Frontend dibuat dengan React + Vite, sedangkan backend NestJS menyediakan REST API CRUD untuk jadwal race.
 
-## Menjalankan aplikasi
-
-Persyaratan: Node.js dan npm.
+## Running
 
 ```powershell
 npm install
@@ -13,13 +11,9 @@ npm install
 npm run start:dev
 ```
 
-Jalankan frontend di terminal kedua dari folder utama:
-
 ```powershell
 npm run dev
 ```
-
-Backend berjalan di `http://localhost:3000/api`; frontend menampilkan data race dari backend. Data disimpan sementara di memori dan kembali ke data awal saat server dimulai ulang.
 
 ## Tahapan dan screenshot
 
