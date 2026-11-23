@@ -29,7 +29,7 @@ Screenshot instalasi, resource, dan backend berjalan:
 2. **Resource Race** — struktur entity, DTO, controller, dan service: `docs/screenshots/02-resource-races.png`.
 3. **Backend berjalan** — server NestJS aktif: `docs/screenshots/03-backend-berjalan.png`.
 
-Request backend diuji menggunakan REST Client di `backend/test/races.http`. Screenshot berikut memperlihatkan request/response backend bersama hasilnya di frontend.
+Request backend diuji pakai REST Client di `backend/test/races.http`.
 
 ### 1. Menampilkan daftar race (GET)
 
@@ -41,7 +41,7 @@ Backend mengembalikan seluruh jadwal race dan frontend menampilkan daftar yang s
 
 ### 2. Menambahkan race (POST)
 
-Backend membuat jadwal baru; race tersebut kemudian muncul di daftar frontend.
+Backend membuat jadwal baru: race/jadwal yang tadi di post akan muncul di daftar frontend. 
 
 | Backend | Frontend |
 | --- | --- |
@@ -62,5 +62,3 @@ Backend menghapus race dan frontend memperbarui daftar tanpa race tersebut.
 | Backend | Frontend |
 | --- | --- |
 | ![DELETE race di backend](docs/screenshots/delete-back-end.png) | ![Daftar frontend setelah race dihapus](docs/screenshots/delete-front-end.png) |
-
-Kode dan screenshot disimpan di repository GitHub untuk dikumpulkan melalui LMS.
