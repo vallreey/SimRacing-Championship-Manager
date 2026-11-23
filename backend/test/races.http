@@ -1,0 +1,67 @@
+@baseUrl = http://localhost:3000/api
+
+###
+# @name listRaces
+GET {{baseUrl}}/races
+
+###
+# @name createRace
+POST {{baseUrl}}/races
+Content-Type: application/json
+
+{
+  "name": "Round 4 - Sentul Night",
+  "trackId": "trk-4",
+  "date": "2026-12-05",
+  "time": "19:30",
+  "plannedDuration": 75,
+  "status": "Scheduled"
+}
+
+###
+# @name findCreatedRace
+GET {{baseUrl}}/races/{{createRace.response.body.id}}
+
+###
+# @name updateCreatedRace
+PATCH {{baseUrl}}/races/{{createRace.response.body.id}}
+Content-Type: application/json
+
+{
+  "name": "Round 4 - Sentul Night GP",
+  "plannedDuration": 90
+}
+
+###
+# @name duplicateRace
+POST {{baseUrl}}/races
+Content-Type: application/json
+
+{
+  "name": "Round 2 - Monza Sprint",
+  "trackId": "trk-1",
+  "date": "2026-12-06",
+  "time": "19:00",
+  "plannedDuration": 60
+}
+
+###
+# @name invalidRace
+POST {{baseUrl}}/races
+Content-Type: application/json
+
+{
+  "name": "x",
+  "trackId": "",
+  "date": "bukan-tanggal",
+  "time": "25:61",
+  "plannedDuration": 0
+}
+
+###
+# @name missingRace
+GET {{baseUrl}}/races/race-not-found
+
+###
+# @name deleteCreatedRace
+DELETE {{baseUrl}}/races/{{createRace.response.body.id}}

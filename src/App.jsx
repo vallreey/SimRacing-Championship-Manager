@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import Navbar from "./components/Navbar";
 import Dashboard from "./components/Dashboard";
@@ -9,8 +9,9 @@ import RacePage from "./components/RacePage";
 import ParticipantPage from "./components/ParticipantPage";
 import RaceControl from "./components/RaceControl";
 import ResultsPage from "./components/ResultsPage";
-import { initialDrivers, initialCars, initialTracks, initialRaces, initialParticipants } from "./data/initialData";
+import { initialDrivers, initialCars, initialTracks, initialParticipants } from "./data/initialData";
 import { createId, getById, formatDuration } from "./utils/helpers";
+import { createRace, deleteRace, getRaces, updateRace } from "./services/racesApi";
 
 const navItems = [
   { key: "dashboard", label: "Dashboard" },
@@ -28,8 +29,47 @@ function App() {
   const [drivers, setDrivers] = useState(initialDrivers);
   const [cars, setCars] = useState(initialCars);
   const [tracks, setTracks] = useState(initialTracks);
-  const [races, setRaces] = useState(initialRaces);
+  const [races, setRaces] = useState([]);
+  const [racesLoading, setRacesLoading] = useState(true);
+  const [racesError, setRacesError] = useState("");
   const [participants, setParticipants] = useState(initialParticipants);
+
+  useEffect(() => {
+    let active = true;
+    getRaces()
+      .then((data) => {
+        if (active) {
+          setRaces(data);
+          setRacesError("");
+        }
+      })
+      .catch((error) => {
+        if (active) {
+          setRacesError(error.message);
+        }
+      })
+      .finally(() => {
+        if (active) {
+          setRacesLoading(false);
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  async function handleReloadRaces() {
+    setRacesLoading(true);
+    try {
+      setRaces(await getRaces());
+      setRacesError("");
+    } catch (error) {
+      setRacesError(error.message);
+    } finally {
+      setRacesLoading(false);
+    }
+  }
 
   function handleAddDriver(data) {
     setDrivers([...drivers, { id: createId("drv"), ...data }]);
@@ -79,24 +119,27 @@ function App() {
     setTracks(tracks.filter((track) => track.id !== id));
   }
 
-  function handleAddRace(data) {
-    setRaces([
-      ...races,
-      { id: createId("race"), ...data, startTime: null, endTime: null, actualDuration: null },
-    ]);
+  async function handleAddRace(data) {
+    const race = await createRace(data);
+    setRaces((current) => [...current, race]);
+    setRacesError("");
   }
 
-  function handleUpdateRace(id, data) {
-    setRaces(races.map((race) => (race.id === id ? { ...race, ...data } : race)));
+  async function handleUpdateRace(id, data) {
+    const updatedRace = await updateRace(id, data);
+    setRaces((current) => current.map((race) => (race.id === id ? updatedRace : race)));
+    setRacesError("");
   }
 
-  function handleDeleteRace(id) {
+  async function handleDeleteRace(id) {
     if (getById(races, id).status === "In Progress") {
       window.alert("Race yang sedang berjalan tidak dapat dihapus.");
       return;
     }
-    setRaces(races.filter((race) => race.id !== id));
+    await deleteRace(id);
+    setRaces((current) => current.filter((race) => race.id !== id));
     setParticipants(participants.filter((p) => p.raceId !== id));
+    setRacesError("");
   }
 
   function handleAddParticipant(data) {
@@ -111,36 +154,35 @@ function App() {
     setParticipants(participants.filter((p) => p.id !== id));
   }
 
-  function handleStartRace(id) {
-    setRaces(
-      races.map((race) =>
-        race.id === id
-          ? {
-              ...race,
-              status: "In Progress",
-              startTime: new Date().toISOString(),
-              endTime: null,
-              actualDuration: null,
-            }
-          : race
-      )
-    );
+  async function handleStartRace(id) {
+    try {
+      const race = await updateRace(id, {
+        status: "In Progress",
+        startTime: new Date().toISOString(),
+        endTime: null,
+        actualDuration: null,
+      });
+      setRaces((current) => current.map((item) => (item.id === id ? race : item)));
+      setRacesError("");
+    } catch (error) {
+      setRacesError(error.message);
+    }
   }
 
-  function handleFinishRace(id) {
+  async function handleFinishRace(id) {
+    const race = getById(races, id);
     const endTime = new Date();
-    setRaces(
-      races.map((race) =>
-        race.id === id
-          ? {
-              ...race,
-              status: "Finished",
-              endTime: endTime.toISOString(),
-              actualDuration: formatDuration(endTime.getTime() - new Date(race.startTime).getTime()),
-            }
-          : race
-      )
-    );
+    try {
+      const updatedRace = await updateRace(id, {
+        status: "Finished",
+        endTime: endTime.toISOString(),
+        actualDuration: formatDuration(endTime.getTime() - new Date(race.startTime).getTime()),
+      });
+      setRaces((current) => current.map((item) => (item.id === id ? updatedRace : item)));
+      setRacesError("");
+    } catch (error) {
+      setRacesError(error.message);
+    }
   }
 
   function handleSaveResults(raceId, positions) {
@@ -165,6 +207,15 @@ function App() {
       <Header />
       <Navbar items={navItems} activePage={activePage} onNavigate={setActivePage} />
       <main className="main">
+        {racesLoading && <p role="status">Memuat jadwal race dari backend...</p>}
+        {racesError && (
+          <div className="card">
+            <p className="error">Backend jadwal race: {racesError}</p>
+            <button type="button" className="btn" onClick={handleReloadRaces} disabled={racesLoading}>
+              Coba lagi
+            </button>
+          </div>
+        )}
         {activePage === "dashboard" && <Dashboard stats={stats} races={races} tracks={tracks} drivers={drivers} cars={cars} participants={participants} />}
         {activePage === "drivers" && <DriverPage drivers={drivers} onAdd={handleAddDriver} onUpdate={handleUpdateDriver} onDelete={handleDeleteDriver} />}
         {activePage === "cars" && <CarPage cars={cars} onAdd={handleAddCar} onUpdate={handleUpdateCar} onDelete={handleDeleteCar} />}

@@ -15,6 +15,7 @@ function RacePage({ races, tracks, onAdd, onUpdate, onDelete }) {
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
 
   const statusLocked = form.status === "In Progress" || form.status === "Finished";
   const statusOptions = statusLocked ? [form.status] : ["Scheduled", "Cancelled"];
@@ -29,7 +30,7 @@ function RacePage({ races, tracks, onAdd, onUpdate, onDelete }) {
     setError("");
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     const name = form.name.trim();
     const plannedDuration = Number(form.plannedDuration);
@@ -55,12 +56,19 @@ function RacePage({ races, tracks, onAdd, onUpdate, onDelete }) {
       plannedDuration,
       status: form.status,
     };
-    if (editingId) {
-      onUpdate(editingId, data);
-    } else {
-      onAdd(data);
+    setSaving(true);
+    try {
+      if (editingId) {
+        await onUpdate(editingId, data);
+      } else {
+        await onAdd(data);
+      }
+      resetForm();
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setSaving(false);
     }
-    resetForm();
   }
 
   function handleEdit(race) {
@@ -76,11 +84,18 @@ function RacePage({ races, tracks, onAdd, onUpdate, onDelete }) {
     setError("");
   }
 
-  function handleDelete(race) {
+  async function handleDelete(race) {
     if (window.confirm(`Hapus race ${race.name}?`)) {
-      onDelete(race.id);
-      if (editingId === race.id) {
-        resetForm();
+      setSaving(true);
+      try {
+        await onDelete(race.id);
+        if (editingId === race.id) {
+          resetForm();
+        }
+      } catch (requestError) {
+        setError(requestError.message);
+      } finally {
+        setSaving(false);
       }
     }
   }
@@ -131,11 +146,11 @@ function RacePage({ races, tracks, onAdd, onUpdate, onDelete }) {
         </div>
         {error && <p className="error">{error}</p>}
         <div className="form-actions">
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className="btn btn-primary" disabled={saving}>
             {editingId ? "Simpan Perubahan" : "Tambah"}
           </button>
           {editingId && (
-            <button type="button" className="btn" onClick={resetForm}>
+            <button type="button" className="btn" onClick={resetForm} disabled={saving}>
               Batal
             </button>
           )}
@@ -173,8 +188,8 @@ function RacePage({ races, tracks, onAdd, onUpdate, onDelete }) {
                       <td><StatusBadge status={race.status} /></td>
                       <td>
                         <div className="cell-actions">
-                          <button className="btn btn-small" onClick={() => handleEdit(race)}>Edit</button>
-                          <button className="btn btn-small btn-danger" onClick={() => handleDelete(race)}>Hapus</button>
+                          <button className="btn btn-small" onClick={() => handleEdit(race)} disabled={saving}>Edit</button>
+                          <button className="btn btn-small btn-danger" onClick={() => handleDelete(race)} disabled={saving}>Hapus</button>
                         </div>
                       </td>
                     </tr>
